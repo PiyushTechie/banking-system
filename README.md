@@ -37,7 +37,9 @@ BankingSystem/
 │   ├── withdraw.jsp
 │   └── transfer.jsp
 │
+│── pom.xml 
 │── README.md
+
 
 ## Database Setup
 
@@ -78,5 +80,5 @@ CREATE TABLE transactions (
 
 ## Author
 
-**Piyush**  
-Computer Science (AIML) Student | Backend & Java Developer
+**Piyush Prajapati**  
+Computer Science (AIML) Student | Backend & APIs Developer
