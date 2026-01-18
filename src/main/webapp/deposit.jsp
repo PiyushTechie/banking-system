@@ -1,156 +1,289 @@
 <%@ page session="true" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
-    // Get the user's email from the session (used for display/context if needed, but NOT sent in form)
-    String userEmail = (session != null) ? (String) session.getAttribute("user_email") : "";
+    String userEmail = (String) session.getAttribute("user_email");
+    if (userEmail != null) userEmail = userEmail.trim();
 
-    // Message handling from servlet redirects
     String msg = request.getParameter("msg");
+    String displayMsg = "";
     boolean isError = false;
-    if (msg != null) {
-        String lowerMsg = msg.toLowerCase();
-        isError = lowerMsg.contains("error") 
-               || lowerMsg.contains("failed") 
-               || lowerMsg.contains("invalid")
-               || lowerMsg.contains("must be positive"); // Added check for validation message
+    if (msg != null && !msg.isBlank()) {
+        try {
+            displayMsg = java.net.URLDecoder.decode(msg, "UTF-8");
+        } catch (Exception e) {
+            displayMsg = msg;
+        }
+        isError = displayMsg.contains("Error") 
+               || displayMsg.contains("Failed") 
+               || displayMsg.contains("Invalid") 
+               || displayMsg.contains("must be positive");
     }
 %>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Deposit Funds - SecureBank</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-    body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-    .glass { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border:1px solid rgba(255,255,255,0.2); }
-    .fade-in-up { animation: fadeInUp 0.6s ease-out; }
-    @keyframes fadeInUp { from {opacity:0; transform:translateY(30px);} to {opacity:1; transform:translateY(0);} }
-    .input-focus { transition: all 0.3s ease; }
-    .input-focus:focus { transform: translateY(-2px); box-shadow:0 10px 20px rgba(16,185,129,0.2); }
-    .deposit-btn { position:relative; overflow:hidden; transition: all 0.3s ease; }
-    .deposit-btn::before { content:''; position:absolute; top:50%; left:50%; width:0;height:0;border-radius:50%; background: rgba(255,255,255,0.3); transform:translate(-50%,-50%); transition: width 0.6s, height 0.6s; }
-    .deposit-btn:hover::before { width:400px; height:400px; }
-    .deposit-btn:hover { transform:translateY(-2px); box-shadow:0 10px 25px rgba(16,185,129,0.4); }
-    .info-card { transition: all 0.3s ease; }
-    .info-card:hover { transform:translateY(-3px); }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deposit Funds - SecureBank</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap');
+        
+        body { 
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f7fa;
+        }
+        
+        .header-shadow {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        }
+        
+        .form-card {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .info-card {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+        }
+        
+        .info-card:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+        
+        .quick-amount-btn {
+            transition: all 0.2s;
+        }
+        
+        .quick-amount-btn:hover {
+            background-color: #dbeafe;
+            border-color: #3b82f6;
+            transform: translateY(-1px);
+        }
+        
+        .submit-btn {
+            transition: all 0.2s;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+        }
+    </style>
 </head>
-<body class="flex items-center justify-center min-h-screen p-4">
+<body>
 
-<div class="w-full max-w-5xl fade-in-up grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-    <!-- Deposit Form -->
-    <div class="lg:col-span-2 glass p-8 rounded-3xl shadow-2xl">
-        <div class="flex items-center justify-center mb-6">
-            <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mr-4">
-                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                </svg>
-            </div>
-            <div>
-                <h1 class="text-3xl font-bold text-gray-800">Deposit Funds</h1>
-                <p class="text-gray-600 text-sm">Add money to your account (<%= userEmail %>)</p>
-            </div>
-        </div>
-
-        <form action="TransactionServlet" method="POST" class="space-y-6">
-            <input type="hidden" name="action" value="deposit">
-            <%-- The email field is removed - servlet gets it from session --%>
-
-            <div>
-                <label for="amount" class="block text-sm font-semibold text-gray-700 mb-2">Deposit Amount</label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <span class="text-gray-500 font-semibold text-lg">₹</span>
+    <!-- Header -->
+    <header class="bg-white header-shadow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <div class="w-10 h-10 bg-blue-600 rounded flex items-center justify-center mr-3">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"></path>
+                            </svg>
+                        </div>
+                        <span class="text-2xl font-bold text-gray-900">SecureBank</span>
                     </div>
-                    <input type="number" id="amount" name="amount" step="0.01" min="0.01" required placeholder="0.00"
-                           class="input-focus block w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-lg font-semibold">
                 </div>
-                <p class="mt-2 text-xs text-gray-500">Enter the amount you wish to deposit</p>
-            </div>
-
-            <div>
-                <p class="text-sm font-semibold text-gray-700 mb-3">Quick Select</p>
-                <div class="grid grid-cols-4 gap-3">
-                    <button type="button" onclick="document.getElementById('amount').value='500'" class="py-3 px-4 border-2 border-gray-300 rounded-xl text-sm font-semibold text-gray-700 hover:bg-green-50 hover:border-green-500 transition-all duration-200">₹500</button>
-                    <button type="button" onclick="document.getElementById('amount').value='1000'" class="py-3 px-4 border-2 border-gray-300 rounded-xl text-sm font-semibold text-gray-700 hover:bg-green-50 hover:border-green-500 transition-all duration-200">₹1,000</button>
-                    <button type="button" onclick="document.getElementById('amount').value='2000'" class="py-3 px-4 border-2 border-gray-300 rounded-xl text-sm font-semibold text-gray-700 hover:bg-green-50 hover:border-green-500 transition-all duration-200">₹2,000</button>
-                    <button type="button" onclick="document.getElementById('amount').value='5000'" class="py-3 px-4 border-2 border-gray-300 rounded-xl text-sm font-semibold text-gray-700 hover:bg-green-50 hover:border-green-500 transition-all duration-200">₹5,000</button>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="index.jsp" class="text-gray-700 hover:text-blue-600 font-medium">Dashboard</a>
+                    <a href="transfer.jsp" class="text-gray-700 hover:text-blue-600 font-medium">Transfer</a>
+                    <a href="withdraw.jsp" class="text-gray-700 hover:text-blue-600 font-medium">Withdraw</a>
+                    <a href="HistoryServlet" class="text-gray-700 hover:text-blue-600 font-medium">History</a>
+                </nav>
+                <div class="flex items-center space-x-4">
+                    <div class="hidden md:flex items-center space-x-2">
+                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                        </div>
+                        <span class="text-sm text-gray-700"><%= (userEmail != null && !userEmail.isBlank()) ? userEmail : "Guest" %></span>
+                    </div>
                 </div>
             </div>
-
-            <button type="submit" class="deposit-btn relative w-full py-4 px-4 border border-transparent rounded-xl text-base font-semibold text-white bg-gradient-to-r from-green-500 to-emerald-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                <span class="relative z-10 flex items-center justify-center">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                    </svg>
-                    Deposit Now
-                </span>
-            </button>
-
-            <a href="index.jsp" class="block text-center w-full py-3 px-4 border-2 border-gray-300 rounded-xl text-base font-semibold text-gray-700 hover:bg-gray-50 hover:border-green-500 transition-all duration-200">Back to Home</a>
-        </form>
-    </div>
-
-    <!-- Sidebar Cards -->
-    <div class="lg:col-span-1 space-y-4">
-        <div class="glass info-card p-6 rounded-2xl shadow-xl">
-            <div class="flex items-center mb-4">
-                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
-                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                </div>
-                <h3 class="text-lg font-bold text-gray-800">Deposit Benefits</h3>
-            </div>
-            <ul class="space-y-3 text-sm text-gray-600">
-                <li class="flex items-start"><span class="ml-1">Instant credit to your account</span></li>
-                <li class="flex items-start"><span class="ml-1">No deposit fees or charges</span></li>
-                <li class="flex items-start"><span class="ml-1">Secure encrypted transactions</span></li>
-                <li class="flex items-start"><span class="ml-1">Available for use immediately</span></li>
-            </ul>
         </div>
-    </div>
+    </header>
 
-</div>
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-<%-- Toast Message --%>
-<% if (msg != null) { %>
-<div id="toast" class="fixed top-6 right-6 max-w-sm p-5 rounded-2xl shadow-2xl text-white <%= isError ? "bg-gradient-to-r from-red-500 to-red-600" : "bg-gradient-to-r from-green-500 to-green-600" %> fade-in-up" style="z-index:9999;">
-    <div class="flex items-start">
-        <svg class="w-6 h-6 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <% if (isError) { %>
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-            <% } else { %>
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-            <% } %>
-        </svg>
-        <div class="flex-1">
-            <p class="font-semibold text-base"><%= java.net.URLDecoder.decode(msg, "UTF-8") %></p>
+        <!-- Page Title -->
+        <div class="mb-6">
+            <h1 class="text-3xl font-bold text-gray-900">Deposit Funds</h1>
+            <p class="text-gray-600 mt-1">Add money to your account securely</p>
         </div>
-        <button onclick="document.getElementById('toast').style.display='none'" class="ml-4 text-white hover:text-gray-200 transition-colors">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-        </button>
-    </div>
-</div>
 
-<script>
-// Auto-hide toast message after 5 seconds
-setTimeout(function(){
-    const t = document.getElementById('toast');
-    if(t){ 
-        t.style.transition = 'opacity 0.5s ease-out'; // Add transition for fade out
-        t.style.opacity='0'; 
-        setTimeout(()=>{ t.style.display='none'; },500); // Wait for fade out before hiding
-    }
-},5000);
-</script>
-<% } %>
+        <!-- Notification Message -->
+        <% if (!displayMsg.isEmpty()) { %>
+            <div class="mb-6 p-4 rounded-md <%= isError ? "bg-red-50 border border-red-200" : "bg-green-50 border border-green-200" %>">
+                <div class="flex items-start">
+                    <% if (isError) { %>
+                        <svg class="w-5 h-5 text-red-500 mr-3 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="text-red-800 font-medium text-sm"><%= displayMsg %></span>
+                    <% } else { %>
+                        <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="text-green-800 font-medium text-sm"><%= displayMsg %></span>
+                    <% } %>
+                </div>
+            </div>
+        <% } %>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Deposit Form -->
+            <div class="lg:col-span-2">
+                <div class="form-card rounded-lg p-6">
+                    <div class="flex items-start mb-6">
+                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-900">Make a Deposit</h2>
+                            <p class="text-sm text-gray-600 mt-1">Enter the amount you wish to deposit</p>
+                        </div>
+                    </div>
+
+                    <form action="TransactionServlet" method="POST" class="space-y-6">
+                        <input type="hidden" name="action" value="deposit">
+
+                        <div>
+                            <label for="amount" class="block text-sm font-semibold text-gray-700 mb-2">
+                                Deposit Amount
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 font-semibold text-lg">₹</span>
+                                </div>
+                                <input type="number" 
+                                       id="amount" 
+                                       name="amount" 
+                                       step="0.01" 
+                                       min="0.01" 
+                                       required 
+                                       placeholder="0.00"
+                                       class="block w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-lg">
+                            </div>
+                            <p class="mt-2 text-xs text-gray-500">Minimum deposit amount is ₹0.01</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-3">Quick Select</label>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                <button type="button" 
+                                        onclick="document.getElementById('amount').value='500'" 
+                                        class="quick-amount-btn py-3 px-4 border-2 border-gray-300 rounded-lg text-sm font-semibold text-gray-700">
+                                    ₹500
+                                </button>
+                                <button type="button" 
+                                        onclick="document.getElementById('amount').value='1000'" 
+                                        class="quick-amount-btn py-3 px-4 border-2 border-gray-300 rounded-lg text-sm font-semibold text-gray-700">
+                                    ₹1,000
+                                </button>
+                                <button type="button" 
+                                        onclick="document.getElementById('amount').value='2000'" 
+                                        class="quick-amount-btn py-3 px-4 border-2 border-gray-300 rounded-lg text-sm font-semibold text-gray-700">
+                                    ₹2,000
+                                </button>
+                                <button type="button" 
+                                        onclick="document.getElementById('amount').value='5000'" 
+                                        class="quick-amount-btn py-3 px-4 border-2 border-gray-300 rounded-lg text-sm font-semibold text-gray-700">
+                                    ₹5,000
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="submit" 
+                                class="submit-btn w-full py-3 px-4 border border-transparent rounded-lg text-base font-semibold text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                            <span class="flex items-center justify-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Deposit Now
+                            </span>
+                        </button>
+
+                        <a href="index.jsp" 
+                           class="block text-center w-full py-3 px-4 border-2 border-gray-300 rounded-lg text-base font-semibold text-gray-700 hover:bg-gray-50 transition-all duration-200">
+                            Back to Dashboard
+                        </a>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Info Sidebar -->
+            <div class="lg:col-span-1">
+                <div class="info-card rounded-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                            <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900">Deposit Info</h3>
+                    </div>
+                    <ul class="space-y-3 text-sm text-gray-600">
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span>Instant credit to your account</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span>No deposit fees or charges</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span>Secure encrypted transactions</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span>Available for use immediately</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="info-card rounded-lg p-6 mt-6">
+                    <div class="flex items-center mb-3">
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900">Security</h3>
+                    </div>
+                    <p class="text-sm text-gray-600">
+                        Your deposits are protected with bank-level encryption and security measures.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center py-6 text-gray-600 text-sm">
+        <p>© 2025 SecureBank. Your money is safe with us.</p>
+    </div>
 
 </body>
 </html>
-

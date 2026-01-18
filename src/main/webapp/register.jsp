@@ -4,231 +4,306 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - SecureBank</title>
+    <title>Open an Account - SecureBank</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap');
+        
         body { 
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f7fa;
         }
         
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        .header-shadow {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
         }
         
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        .fade-in-up { animation: fadeInUp 0.6s ease-out; }
-
-        @keyframes slideInRight { from { opacity: 0; transform: translateX(100px); } to { opacity: 1; transform: translateX(0); } }
-        .slide-in-right { animation: slideInRight 0.5s ease-out; }
-
-        .input-focus { transition: all 0.3s ease; }
-        .input-focus:focus { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(102, 126, 234, 0.2); }
-
-        .register-btn {
-            position: relative; overflow: hidden; transition: all 0.3s ease;
+        .register-container {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
-        .register-btn::before {
-            content: ''; position: absolute; top: 50%; left: 50%;
-            width: 0; height: 0; border-radius: 50%; background: rgba(255, 255, 255, 0.3);
-            transform: translate(-50%, -50%); transition: width 0.6s, height 0.6s;
+        
+        .btn-primary {
+            background: linear-gradient(to right, #0066cc, #004c99);
+            transition: all 0.2s;
         }
-        .register-btn:hover::before { width: 400px; height: 400px; }
-        .register-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4); }
-
-        .floating { animation: floating 3s ease-in-out infinite; }
-        @keyframes floating { 0%,100%{transform:translateY(0px);}50%{transform:translateY(-20px);} }
-
-        .feature-card { transition: all 0.3s ease; }
-        .feature-card:hover { transform: translateX(10px); }
+        
+        .btn-primary:hover {
+            background: linear-gradient(to right, #0052a3, #003d7a);
+            box-shadow: 0 4px 8px rgba(0,102,204,0.2);
+        }
+        
+        input:focus {
+            border-color: #0066cc;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0,102,204,0.1);
+        }
+        
+        .step-indicator {
+            background: #e8f0fe;
+            color: #0066cc;
+            font-weight: 600;
+        }
+        
+        .benefit-item {
+            border-left: 3px solid #0066cc;
+        }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen p-4">
+<body>
 
-<div class="w-full max-w-6xl flex items-center justify-center gap-8">
-
-    <!-- Left Side - Decorative Section -->
-    <div class="hidden lg:flex flex-col items-start justify-center w-1/2 text-white fade-in-up pr-8">
-        <div class="mb-8">
-            <div class="floating inline-block mb-6">
-                <div class="w-20 h-20 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
-                    <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
-                    </svg>
+    <!-- Header -->
+    <header class="bg-white header-shadow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <div class="w-10 h-10 bg-blue-600 rounded flex items-center justify-center mr-3">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"></path>
+                            </svg>
+                        </div>
+                        <span class="text-2xl font-bold text-gray-900">SecureBank</span>
+                    </div>
                 </div>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#" class="text-gray-700 hover:text-blue-600 font-medium">Personal</a>
+                    <a href="#" class="text-gray-700 hover:text-blue-600 font-medium">Business</a>
+                    <a href="#" class="text-gray-700 hover:text-blue-600 font-medium">About Us</a>
+                    <a href="#" class="text-gray-700 hover:text-blue-600 font-medium">Contact</a>
+                </nav>
             </div>
-            <h2 class="text-4xl font-bold mb-4">Join SecureBank Today</h2>
-            <p class="text-xl text-blue-100 mb-8">Experience banking like never before with our secure and user-friendly platform</p>
         </div>
+    </header>
 
-        <div class="space-y-4 w-full">
-            <div class="feature-card flex items-start space-x-4 p-4 bg-white bg-opacity-10 rounded-xl backdrop-blur-sm">
-                <div class="flex-shrink-0">
-                    <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                        </svg>
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="grid lg:grid-cols-3 gap-8">
+            
+            <!-- Left Column - Benefits -->
+            <div class="lg:col-span-1 space-y-6">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 mb-3">Open Your Account</h1>
+                    <p class="text-gray-600">Join thousands of satisfied customers who trust SecureBank for their financial needs.</p>
+                </div>
+
+                <!-- Account Benefits -->
+                <div class="bg-white rounded-lg p-6 shadow-sm">
+                    <h2 class="text-lg font-bold text-gray-900 mb-4">Account Benefits</h2>
+                    <div class="space-y-4">
+                        <div class="benefit-item pl-4 py-2">
+                            <h3 class="font-semibold text-gray-900 text-sm">No Monthly Fees</h3>
+                            <p class="text-sm text-gray-600 mt-1">Keep more of your money with zero account maintenance charges</p>
+                        </div>
+                        <div class="benefit-item pl-4 py-2">
+                            <h3 class="font-semibold text-gray-900 text-sm">Free Online Banking</h3>
+                            <p class="text-sm text-gray-600 mt-1">Access your account 24/7 from anywhere in the world</p>
+                        </div>
+                        <div class="benefit-item pl-4 py-2">
+                            <h3 class="font-semibold text-gray-900 text-sm">Mobile App</h3>
+                            <p class="text-sm text-gray-600 mt-1">Bank on-the-go with our award-winning mobile application</p>
+                        </div>
+                        <div class="benefit-item pl-4 py-2">
+                            <h3 class="font-semibold text-gray-900 text-sm">FDIC Insured</h3>
+                            <p class="text-sm text-gray-600 mt-1">Your deposits are insured up to $250,000</p>
+                        </div>
                     </div>
                 </div>
-                <div>
-                    <h3 class="font-semibold text-lg mb-1">Bank-Level Security</h3>
-                    <p class="text-blue-100 text-sm">Your data is protected with military-grade encryption</p>
+
+                <!-- Security Notice -->
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div class="flex items-start">
+                        <svg class="w-5 h-5 text-blue-600 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        <div>
+                            <h3 class="font-semibold text-blue-900 text-sm">Your Security Matters</h3>
+                            <p class="text-sm text-blue-800 mt-1">We use bank-level encryption to protect your personal information</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="feature-card flex items-start space-x-4 p-4 bg-white bg-opacity-10 rounded-xl backdrop-blur-sm">
-                <div class="flex-shrink-0">
-                    <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                        </svg>
+            <!-- Right Column - Registration Form -->
+            <div class="lg:col-span-2">
+                <div class="register-container rounded-lg p-8">
+                    
+                    <!-- Progress Indicator -->
+                    <div class="mb-8">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-medium text-gray-700">Step 1 of 2</span>
+                            <span class="text-sm text-gray-500">Account Information</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-blue-600 h-2 rounded-full" style="width: 50%"></div>
+                        </div>
                     </div>
-                </div>
-                <div>
-                    <h3 class="font-semibold text-lg mb-1">Instant Transfers</h3>
-                    <p class="text-blue-100 text-sm">Send and receive money in seconds, not days</p>
-                </div>
-            </div>
 
-            <div class="feature-card flex items-start space-x-4 p-4 bg-white bg-opacity-10 rounded-xl backdrop-blur-sm">
-                <div class="flex-shrink-0">
-                    <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
+                    <div class="mb-8">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-2">Create Your Account</h2>
+                        <p class="text-gray-600">Please provide your information to get started</p>
+                    </div>
+
+                    <form action="RegisterServlet" method="POST" class="space-y-6">
+                        
+                        <!-- Email -->
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                                Email Address <span class="text-red-500">*</span>
+                            </label>
+                            <input type="email" 
+                                   id="email" 
+                                   name="email" 
+                                   required
+                                   autocomplete="off"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-md text-gray-900"
+                                   placeholder="Enter your email address">
+                            <p class="mt-1 text-sm text-gray-500">We'll use this email for account notifications</p>
+                        </div>
+
+                        <!-- Password -->
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                                Password <span class="text-red-500">*</span>
+                            </label>
+                            <input type="password" 
+                                   id="password" 
+                                   name="password" 
+                                   required
+                                   autocomplete="off"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-md text-gray-900"
+                                   placeholder="Create a secure password">
+                            
+                            <!-- Password Requirements -->
+                            <div class="mt-3 bg-gray-50 border border-gray-200 rounded-md p-3">
+                                <p class="text-xs font-medium text-gray-700 mb-2">Password must contain:</p>
+                                <ul class="space-y-1 text-xs text-gray-600">
+                                    <li class="flex items-center">
+                                        <svg class="w-3 h-3 text-gray-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        At least 8 characters
+                                    </li>
+                                    <li class="flex items-center">
+                                        <svg class="w-3 h-3 text-gray-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        One uppercase and one lowercase letter
+                                    </li>
+                                    <li class="flex items-center">
+                                        <svg class="w-3 h-3 text-gray-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        One number or special character
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Terms Agreement -->
+                        <div>
+                            <label class="flex items-start">
+                                <input type="checkbox" 
+                                       required
+                                       class="w-4 h-4 text-blue-600 border-gray-300 rounded mt-1">
+                                <span class="ml-3 text-sm text-gray-700">
+                                    I agree to the <a href="#" class="text-blue-600 hover:text-blue-700 font-medium">Terms of Service</a> and <a href="#" class="text-blue-600 hover:text-blue-700 font-medium">Privacy Policy</a>
+                                </span>
+                            </label>
+                        </div>
+
+                        <div>
+                            <label class="flex items-start">
+                                <input type="checkbox" 
+                                       class="w-4 h-4 text-blue-600 border-gray-300 rounded mt-1">
+                                <span class="ml-3 text-sm text-gray-700">
+                                    Send me updates about products, services, and exclusive offers
+                                </span>
+                            </label>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" 
+                                class="btn-primary w-full py-3 px-4 rounded-md text-white font-semibold">
+                            Continue to Next Step
+                        </button>
+                    </form>
+
+                    <!-- Already Have Account -->
+                    <div class="mt-8 pt-6 border-t border-gray-200 text-center">
+                        <p class="text-sm text-gray-600">
+                            Already have an account? 
+                            <a href="login.jsp" class="text-blue-600 hover:text-blue-700 font-semibold ml-1">
+                                Sign In
+                            </a>
+                        </p>
                     </div>
                 </div>
-                <div>
-                    <h3 class="font-semibold text-lg mb-1">Zero Hidden Fees</h3>
-                    <p class="text-blue-100 text-sm">Transparent pricing with no surprises</p>
+
+                <!-- Help Text -->
+                <div class="mt-6 text-center text-sm text-gray-600">
+                    <p>Need help? Call us at <span class="font-semibold text-gray-900">1-800-SECURE-BANK</span></p>
+                    <p class="mt-1">Monday - Friday, 8:00 AM - 8:00 PM EST</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Right Side - Registration Form -->
-    <div class="w-full lg:w-1/2 max-w-md slide-in-right">
-        <div class="glass-effect p-10 rounded-3xl shadow-2xl">
-            <!-- Header -->
-            <div class="text-center mb-8">
-                <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl mb-4">
-                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+    <!-- Toast Message -->
+    <%
+        String message = request.getParameter("msg");
+        if (message != null && !message.isEmpty()) {
+            String displayMsg = "";
+            try { 
+                displayMsg = java.net.URLDecoder.decode(message, "UTF-8"); 
+            } catch(Exception e) { 
+                displayMsg = message; 
+            }
+            String lower = displayMsg.toLowerCase();
+            boolean isError = lower.contains("error") || lower.contains("invalid") || 
+                            lower.contains("failed") || lower.contains("exists") || 
+                            lower.contains("already");
+    %>
+        <div id="message-toast" 
+             class="fixed top-4 right-4 max-w-md p-4 rounded-lg shadow-lg <%= isError ? "bg-red-50 border-l-4 border-red-500" : "bg-green-50 border-l-4 border-green-500" %>"
+             style="z-index: 9999;">
+            <div class="flex items-start">
+                <% if (isError) { %>
+                    <svg class="w-5 h-5 text-red-500 mr-3 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
                     </svg>
+                <% } else { %>
+                    <svg class="w-5 h-5 text-green-500 mr-3 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                <% } %>
+                <div class="flex-1">
+                    <p class="<%= isError ? "text-red-800" : "text-green-800" %> font-medium">
+                        <%= displayMsg %>
+                    </p>
                 </div>
-                <h1 class="text-3xl font-bold text-gray-800 mb-2">Create Account</h1>
-                <p class="text-gray-600">Start your banking journey with us</p>
-            </div>
-
-            <!-- Registration Form -->
-            <form action="RegisterServlet" method="POST" class="space-y-6">
-                <div>
-                    <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
-                            </svg>
-                        </div>
-                        <input type="email" id="email" name="email" required autocomplete="off"
-                               placeholder="you@example.com"
-                               class="input-focus block w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
-                    </div>
-                </div>
-
-                <div>
-                    <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                            </svg>
-                        </div>
-                        <input type="password" id="password" name="password" required autocomplete="off"
-                               placeholder="Create a strong password" 
-                               class="input-focus block w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
-                    </div>
-                    <p class="mt-2 text-xs text-gray-500">Must be at least 8 characters long</p>
-                </div>
-
-                <button type="submit"
-                        class="register-btn relative w-full py-4 px-4 border border-transparent rounded-xl text-base font-semibold text-white bg-gradient-to-r from-green-500 to-emerald-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                    <span class="relative z-10">Create Account</span>
+                <button onclick="document.getElementById('message-toast').remove()" 
+                        class="ml-4 <%= isError ? "text-red-500 hover:text-red-600" : "text-green-500 hover:text-green-600" %>">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
                 </button>
-            </form>
-
-            <!-- Divider -->
-            <div class="relative my-6">
-                <div class="absolute inset-0 flex items-center">
-                    <div class="w-full border-t border-gray-300"></div>
-                </div>
-                <div class="relative flex justify-center text-sm">
-                    <span class="px-4 bg-white text-gray-500">Already have an account?</span>
-                </div>
-            </div>
-
-            <!-- Link back to login -->
-            <div class="text-center">
-                <a href="login.jsp" 
-                   class="inline-block w-full py-3.5 px-4 border-2 border-gray-300 rounded-xl text-base font-semibold text-gray-700 hover:bg-gray-50 hover:border-green-500 transition-all duration-200">
-                    Sign In Instead
-                </a>
-            </div>
-
-            <!-- Terms -->
-            <div class="mt-6 text-center text-xs text-gray-600">
-                By creating an account, you agree to our
-                <a href="#" class="text-blue-600 hover:text-blue-500 font-medium">Terms of Service</a>
-                and
-                <a href="#" class="text-blue-600 hover:text-blue-500 font-medium">Privacy Policy</a>
             </div>
         </div>
-    </div>
-</div>
-
-<%
-    // Toast Handling
-    String message = request.getParameter("msg");
-    String displayMsg = "";
-    boolean isError = false;
-    if(message != null && !message.isEmpty()){
-        try { displayMsg = java.net.URLDecoder.decode(message, "UTF-8"); } 
-        catch(Exception e){ displayMsg = message; }
-        String lower = displayMsg.toLowerCase();
-        isError = lower.contains("error") || lower.contains("invalid") || lower.contains("failed") || lower.contains("exists") || lower.contains("already");
-%>
-<div id="message-toast" 
-     class="fixed top-6 right-6 max-w-sm p-5 rounded-2xl shadow-2xl text-white <%= isError ? "bg-gradient-to-r from-red-500 to-red-600" : "bg-gradient-to-r from-green-500 to-green-600" %> slide-in-right"
-     style="z-index:9999;">
-    <div class="flex items-start">
-        <svg class="w-6 h-6 mr-3 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="<%= isError 
-                ? "M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" 
-                : "M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" %>" clip-rule="evenodd"></path>
-        </svg>
-        <div class="flex-1"><p class="font-semibold text-base"><%= displayMsg %></p></div>
-        <button onclick="document.getElementById('message-toast').style.display='none'" 
-                class="ml-4 text-white hover:text-gray-200 transition-colors">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-            </svg>
-        </button>
-    </div>
-</div>
-<script>
-    setTimeout(function() {
-        var toast = document.getElementById('message-toast');
-        if (toast) {
-            toast.style.opacity = '0';
-            toast.style.transition = 'opacity 0.5s ease';
-            setTimeout(function(){ toast.style.display='none'; }, 500);
+        
+        <script>
+            setTimeout(function() {
+                var toast = document.getElementById('message-toast');
+                if (toast) {
+                    toast.style.opacity = '0';
+                    toast.style.transition = 'opacity 0.3s ease';
+                    setTimeout(function() { toast.remove(); }, 300);
+                }
+            }, 5000);
+        </script>
+    <%
         }
-    }, 5000);
-</script>
-<% } %>
+    %>
 
 </body>
 </html>
