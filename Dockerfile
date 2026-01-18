@@ -1,5 +1,5 @@
 # 1. Build the App using Maven
-FROM maven:3.8.5-openjdk-17 AS build
+FROM maven:3.8.5-openjdk-21 AS build
 WORKDIR /app
 COPY . .
 # This compiles your src/main/java and src/main/webapp into a .war file
