@@ -1,15 +1,14 @@
-# 1. Build the App using Maven
-FROM maven:3.8.5-openjdk-21 AS build
+# 1. Build the App (Using Java 17 to match your new pom.xml)
+FROM maven:3.8.5-openjdk-17 AS build
 WORKDIR /app
 COPY . .
-# This compiles your src/main/java and src/main/webapp into a .war file
 RUN mvn clean package -DskipTests
 
-# 2. Run the App in Tomcat
-FROM tomcat:9.0-jdk17-temurin
-# Remove default Tomcat pages
+# 2. Run in Tomcat 10.1 (REQUIRED for Jakarta Servlet 6.0)
+FROM tomcat:10.1-jdk17
+# Remove default Tomcat apps
 RUN rm -rf /usr/local/tomcat/webapps/*
-# Copy your generated war file to ROOT.war
+# Copy the war file to ROOT.war
 COPY --from=build /app/target/*.war /usr/local/tomcat/webapps/ROOT.war
 
 EXPOSE 8080

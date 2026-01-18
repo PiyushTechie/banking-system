@@ -12,10 +12,10 @@
     <name>BankingSystem</name>
 
     <properties>
-        <maven.compiler.release>23</maven.compiler.release> 
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <failOnMissingWebXml>false</failOnMissingWebXml>
-    </properties>
+    <maven.compiler.release>17</maven.compiler.release> 
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <failOnMissingWebXml>false</failOnMissingWebXml>
+</properties>
 
     <dependencies>
         <dependency>
